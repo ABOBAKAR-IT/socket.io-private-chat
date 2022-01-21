@@ -7,6 +7,10 @@ do {
   friend_name = prompt('Please enter your  friend name: ')
 
 } while(!name&&friend_name)
+if(name&&friend_name){
+    user=name;
+    socket.emit('register',user);
+}
 document.getElementById("user_name").innerHTML = name;
 textarea.addEventListener('keyup', (e) => {
     if(e.key === 'Enter') {
@@ -25,8 +29,12 @@ function sendMessage(message) {
     scrollToBottom()
 
     // Send to server 
-    socket.emit('message', msg)
-
+  
+    socket.emit('private_chat',{
+   frm:user,
+        to : friend_name,
+        message : message
+    });
 }
 
 function appendMessage(msg, type) {
@@ -42,11 +50,15 @@ function appendMessage(msg, type) {
     messageArea.appendChild(mainDiv)
 }
 
-// Recieve messages 
-socket.on('message', (msg) => {
-    appendMessage(msg, 'incoming')
+
+/*Received private messages*/
+socket.on('private_chat',function(msg){
+    let data={}
+    data.user = msg.username;
+    data.message = msg.message;
+    appendMessage(data, 'incoming')
     scrollToBottom()
-})
+});
 
 function scrollToBottom() {
     messageArea.scrollTop = messageArea.scrollHeight
