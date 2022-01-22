@@ -5,7 +5,6 @@ let messageArea = document.querySelector('.message__area')
 do {
     name = prompt('Please enter your name: ')
   friend_name = prompt('Please enter your  friend name: ')
-
 } while(!name&&friend_name)
 if(name&&friend_name){
     user=name;
@@ -54,12 +53,22 @@ function appendMessage(msg, type) {
 /*Received private messages*/
 socket.on('private_chat',function(msg){
     let data={}
+   
     data.user = msg.username;
     data.message = msg.message;
     appendMessage(data, 'incoming')
     scrollToBottom()
 });
 
+
+socket.on('chat',function(msg){
+    let data={}
+    data.user = "socket";
+    data.message = "message";
+    appendMessage(data, 'outgoing')
+    appendMessage(data, 'incoming')
+    scrollToBottom()
+});
 function scrollToBottom() {
     messageArea.scrollTop = messageArea.scrollHeight
 }
