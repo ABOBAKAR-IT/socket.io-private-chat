@@ -1,13 +1,14 @@
 const express = require('express')
-
 const app = express()
 const http = require('http').createServer(app)
+const database=require('./4_model/database')
+const userRoute=require('./1_router/userRouter')
 const PORT = process.env.PORT || 3110
 http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`)
 })
 app.use(express.static(__dirname + '/public'))
-
+app.use('/user',userRoute)
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 })
@@ -52,7 +53,7 @@ io.on('connection', (socket) => {
     sms["frm"] = message
     userbox[to].push(sms);
     if (connectedUsers.hasOwnProperty(to)) {
-     
+     console.log(userbox);
       connectedUsers[to].emit('private_chat', {
         //The sender's username
         username: frm,
