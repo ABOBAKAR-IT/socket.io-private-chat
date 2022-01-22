@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
 // Socket 
 const io = require('socket.io')(http)
 var connectedUsers = {};
+var userbox={}
+
 io.on('connection', (socket) => {
     console.log('Connected...')
  
@@ -25,21 +27,31 @@ io.on('connection', (socket) => {
    
  /*Register connected user*/
  socket.on('register',function(username){
-  socket.username = username.name;
+  socket.username = username;
+ 
   connectedUsers[username] = socket;
+  userbox[username]=[]
+
+// console.log(name);
 });
 
 /*Private chat*/
 socket.on('private_chat',function(data){
-  const to = data.to
-  const frm=data.frm
+  let to = data.to
+  let frm=data.frm
           message = data.message;
-          
+          var sms={}
+         sms["to"]=message
+         userbox[frm].push(sms);
+         var sms={}
+         sms["frm"]=message
+         userbox[to].push(sms);
+
+        console.log(userbox);
   if(connectedUsers.hasOwnProperty(to)){
       connectedUsers[to].emit('private_chat',{
           //The sender's username
           username : frm,
-          
           //Message sent to receiver
           message : message
       });
