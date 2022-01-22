@@ -24,9 +24,12 @@ io.on('connection', (socket) => {
   socket.on('register', function (username) {
     if (connectedUsers.hasOwnProperty(username))
   {
-    connectedUsers[username].emit('chat', {
-    chat:userbox
-    });
+    socket.username = username;
+    connectedUsers[username] = socket;
+    userbox[username] = []
+     connectedUsers[username].emit('chat',
+     userbox
+     );
     console.log("user exist");
   }else{
     socket.username = username;
