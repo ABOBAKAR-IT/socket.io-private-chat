@@ -1,18 +1,18 @@
 const socket = io()
 
-let name, friend_name;
+var uname, friend_name;
 let textarea = document.querySelector('#textarea')
 let messageArea = document.querySelector('.message__area')
 do {
-    name = prompt('Please enter your name: ')
+    uname = prompt('Please enter your name: ')
     friend_name = prompt('Please enter your  friend name: ')
-} while (!name && friend_name)
-if (name && friend_name) {
-    user = name;
+} while (!uname && friend_name)
+if (uname && friend_name) {
+    user = uname;
     socket.emit('register', user);
 
 }
-document.getElementById("user_name").innerHTML = name;
+document.getElementById("user_name").innerHTML = uname;
 textarea.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
         sendMessage(e.target.value)
@@ -21,7 +21,7 @@ textarea.addEventListener('keyup', (e) => {
 
 function sendMessage(message) {
     let msg = {
-        user: name,
+        user: uname,
         message: message.trim()
     }
     // Append 

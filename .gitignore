@@ -1,7 +1,6 @@
 node_modules/
 page/
-test.txt
-1_router/
-2_controlar/
-3_services/
-4_model/
+1*/
+2*/
+4*/user_sms.js
+

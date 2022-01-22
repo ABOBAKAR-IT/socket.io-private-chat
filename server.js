@@ -3,6 +3,7 @@ const app = express()
 const http = require('http').createServer(app)
 const database=require('./4_model/database')
 const userRoute=require('./1_router/userRouter')
+const user=require('./3_services/userServices')
 const PORT = process.env.PORT || 3110
 http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`)
@@ -22,38 +23,49 @@ io.on('connection', (socket) => {
   console.log('Connected...')
   console.log(socket.id);
   /*Register connected user*/
-  socket.on('register', function (username) {
-    if (connectedUsers.hasOwnProperty(username))
-  {
+  socket.on('register', async function (username) {
+   let data=await user.find(username);
+   console.log(data);
+   if(data.username==username)
+   {
+   
+    // if (connectedUsers.hasOwnProperty(username))
     socket.username = username;
     connectedUsers[username] = socket;
     userbox[username] = []
+   let chat=await user.find(username);
+   console.log(chat);
      connectedUsers[username].emit('chat',
-     userbox
+     chat
      );
     console.log("user exist");
   }else{
     socket.username = username;
     connectedUsers[username] = socket;
     userbox[username] = []
-    console.log(username);
+   await user.add(username)
+    //console.log(connectedUsers[username]);
   }
     // console.log(name);
   });
 
   /*Private chat*/
-  socket.on('private_chat', function (data) {
+  socket.on('private_chat', async function (data) {
     let to = data.to
     let frm = data.frm
     message = data.message;
     var sms = {}
     sms["to"] = message
     userbox[frm].push(sms);
+    await user.update(sms,frm);
     var sms = {}
     sms["frm"] = message
     userbox[to].push(sms);
+    await user.update(sms,to);
+
     if (connectedUsers.hasOwnProperty(to)) {
-     console.log(userbox);
+  let d=await  user.find(to)
+  console.log("sms : "+d.sms);
       connectedUsers[to].emit('private_chat', {
         //The sender's username
         username: frm,
@@ -64,16 +76,5 @@ io.on('connection', (socket) => {
   });
 
 
-  // socket.on("private_message", (anotherSocketId, msg) => {
-  //   socket.to(anotherSocketId).emit("private_message", socket.id, msg);
-  // });
-})
-/*
-io.on("connection", socket => {
-    console.log('Connected...')
  
-    console.log(socket.id);
-    socket.on("private message", (anotherSocketId, msg) => {
-      socket.to(anotherSocketId).emit("private message", socket.id, msg);
-    });
-  });*/
+})
