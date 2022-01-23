@@ -1,18 +1,18 @@
 const socket = io()
 
-let name, friend_name;
+var uname, friend_name;
 let textarea = document.querySelector('#textarea')
 let messageArea = document.querySelector('.message__area')
 do {
-    name = prompt('Please enter your name: ')
+    uname = prompt('Please enter your name: ')
     friend_name = prompt('Please enter your  friend name: ')
-} while (!name && friend_name)
-if (name && friend_name) {
-    user = name;
+} while (!uname && friend_name)
+if (uname && friend_name) {
+    user = uname;
     socket.emit('register', user);
 
 }
-document.getElementById("user_name").innerHTML = name;
+document.getElementById("user_name").innerHTML = uname;
 textarea.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
         sendMessage(e.target.value)
@@ -21,7 +21,7 @@ textarea.addEventListener('keyup', (e) => {
 
 function sendMessage(message) {
     let msg = {
-        user: name,
+        user: uname,
         message: message.trim()
     }
     // Append 
@@ -64,14 +64,22 @@ socket.on('private_chat', function (msg) {
 
 
 socket.on('chat', function (msg) {
-    let name = prompt("welcome login again")
+    // let name = prompt("welcome login again")
     let data = {}
-    console.log(msg);
-    data.user = "socket";
-    data.message = "message";
-    appendMessage(data, 'outgoing')
-    appendMessage(data, 'incoming')
+    console.log(msg)
+    msg.sms.forEach(element => {
+       
+         if(element.to){
+            data.user = uname;
+            data.message= element.to
+            appendMessage(data, 'outgoing')
+        }else{
+            data.user = friend_name;
+            data.message= element.frm
+            appendMessage(data, 'incoming')
+         }
     scrollToBottom()
+        })
 });
 
 function scrollToBottom() {
