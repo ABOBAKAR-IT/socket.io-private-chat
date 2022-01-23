@@ -2,14 +2,12 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const database = require("./4_model/database");
-const userRoute = require("./1_router/userRouter");
 const user = require("./3_services/userServices");
 const PORT = process.env.PORT || 3110;
 http.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
 app.use(express.static(__dirname + "/public"));
-app.use("/user", userRoute);
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
