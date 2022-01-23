@@ -13,7 +13,6 @@ app.use("/user", userRoute);
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
-
 // Socket
 const io = require("socket.io")(http);
 var connectedUsers = {};
@@ -31,7 +30,7 @@ io.on("connection", (socket) => {
       connectedUsers[username] = socket;
       userbox[username] = [];
       let chat = await user.find(username);
-      console.log("user : " + chat);
+    //  console.log("user : " + chat);
       connectedUsers[username].emit("chat", chat);
       console.log("user exist");
     } else {
@@ -58,7 +57,6 @@ io.on("connection", (socket) => {
 
     if (connectedUsers.hasOwnProperty(to)) {
       let d = await user.find(to);
-      console.log("sms : " + d.sms);
       connectedUsers[to].emit("private_chat", {
         //The sender's username
         username: frm,

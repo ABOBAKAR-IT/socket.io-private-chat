@@ -64,14 +64,22 @@ socket.on('private_chat', function (msg) {
 
 
 socket.on('chat', function (msg) {
-    let name = prompt("welcome login again")
+    // let name = prompt("welcome login again")
     let data = {}
-    console.log(msg);
-    data.user = "socket";
-    data.message = "message";
-    appendMessage(data, 'outgoing')
-    appendMessage(data, 'incoming')
+    console.log(msg)
+    msg.sms.forEach(element => {
+       
+         if(element.to){
+            data.user = uname;
+            data.message= element.to
+            appendMessage(data, 'outgoing')
+        }else{
+            data.user = friend_name;
+            data.message= element.frm
+            appendMessage(data, 'incoming')
+         }
     scrollToBottom()
+        })
 });
 
 function scrollToBottom() {
