@@ -13,11 +13,9 @@ module.exports.add = async (body) => {
         }
 };
 
-
-
 module.exports.update = async (body,name) => {
 let d=await user.findOneAndUpdate({username:name},{$push: { sms: body } })
-console.log("update "+d);
+
 };
 
 module.exports.find = async (body) => {
